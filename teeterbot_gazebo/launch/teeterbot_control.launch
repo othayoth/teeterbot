@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<launch>
+
+  <!-- Spawn Teeterbot with specific settings -->
+  <include file="$(find teeterbot_gazebo)/launch/teeterbot_empty_world.launch" />
+
+</launch>
