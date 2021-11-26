@@ -59,8 +59,8 @@ class robot_controller():
             # Publish new data if we got a new message.
             if self.got_new_msg and self.upright:
                 if self.on:
-                    pub_right_wheel.publish(self.control_effort[1])
-                    pub_left_wheel.publish(self.control_effort[0])
+                    pub_right_wheel.publish(self.control_effort[0])
+                    pub_left_wheel.publish(self.control_effort[1])
                 else:
                     pub_right_wheel.publish(0.0)
                     pub_left_wheel.publish(0.0)
@@ -97,11 +97,11 @@ class robot_controller():
         self.x[2] = msg.twist[1].angular.y
         self.x[3] = msg.twist[1].angular.z
 
-        self.control_effort[0] =(self.K_lqr_1[0]*self.x[0] + 
+        self.control_effort[0] = -(self.K_lqr_1[0]*self.x[0] + 
                                   self.K_lqr_1[1]*self.x[1] +
                                   self.K_lqr_1[2]*self.x[2] +
                                   self.K_lqr_1[3]*self.x[3])
-        self.control_effort[1] =(self.K_lqr_2[0]*self.x[0] + 
+        self.control_effort[1] = -(self.K_lqr_2[0]*self.x[0] + 
                                   self.K_lqr_2[1]*self.x[1] +
                                   self.K_lqr_2[2]*self.x[2] +
                                   self.K_lqr_2[3]*self.x[3])                                  
@@ -123,16 +123,23 @@ class robot_controller():
         # self.control_effort[0] = math.copysign(1,control)*min(abs(control),self.TLim)
         # self.control_effort[1] = math.copysign(1,control)*min(abs(control),self.TLim)
 
-        # cutoff control within 5 degree                
-        # if -5.0 < (self.E*180.0/math.pi) < 5.0:
+        # #cutoff control within 5 degree                
+        # if -5.0 < (self.pitch*180.0/math.pi) < 5.0:
         #     self.control_effort[0] = 0.0
         #     self.control_effort[1] = 0.0
         # # cutoff control beyond 45 degree                
-        # if  (self.E*180.0/math.pi) < -45.0 or (self.E*180.0/math.pi) > 45.0:
+        # if  (self.pitch*180.0/math.pi) < -45.0 or (self.pitch*180.0/math.pi) > 45.0:
         #     self.control_effort[0] = 0.0
         #     self.control_effort[1] = 0.0
 
-        print(self.E)
+        #cutoff if rolls too much
+        if abs(self.roll*180/math.pi) > 5 or abs(self.pitch*180/math.pi)>55:
+            self.control_effort=[0.0, 0.0]
+
+        #print(self.E)
+        print("Torques: " + str(self.control_effort[0]) + ", " + str(self.control_effort[1]))
+
+        #self.control_effort = [0.0,0.0]
         self.got_new_msg  = True
 
     def config_callback(self,config,level):
