@@ -46,8 +46,9 @@ class robot_controller():
         sub_model       = rospy.Subscriber("gazebo/model_states", ModelStates, self.state_feedback_controller)
         sub_reference   = rospy.Subscriber("/cmd_vel", Twist, self.reference_callback)
         sub_fallen      = rospy.Subscriber("teeterbot/fallen_over", Bool, self.reset_controller)
-        pub_right_wheel = rospy.Publisher("teeterbot/right_torque_cmd", Float64, queue_size=10)
-        pub_left_wheel  = rospy.Publisher("teeterbot/left_torque_cmd", Float64, queue_size=10)
+        pub_right_wheel = rospy.Publisher("teeterbot/right_torque_cmd", Float64)
+        pub_left_wheel  = rospy.Publisher("teeterbot/left_torque_cmd", Float64)
+        #pub_robot_state = rospy.Publisher("teeterbot/state", Twist, queue_size=10)
 
         # Main while loop.
         while not rospy.is_shutdown():
@@ -109,7 +110,7 @@ class robot_controller():
         self.control_effort[1] = self.control_effort[1] + self.g_lqr_left[0]*self.ref_forward_speed + self.g_lqr_left[1]*self.ref_turning_speed                                   
 
         # cutoff control if robot rolls or pitches too much
-        if abs(self.roll*180/math.pi) > 5 or abs(self.pitch*180/math.pi)>75:
+        if abs(self.roll*180/math.pi) > 5 or abs(self.pitch*180/math.pi)>65:
             self.control_effort=[0.0, 0.0]
 
         
