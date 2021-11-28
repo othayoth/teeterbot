@@ -4,4 +4,12 @@
   <!-- Spawn Teeterbot with specific settings -->
   <include file="$(find teeterbot_gazebo)/launch/teeterbot_empty_world.launch" />
 
+  <!-- Start node to control the robot-->
+  <node pkg="teeterbot_gazebo" type="robot_controller.py" name="robot_controller"/>
+
+  <!--RQT to visualize-->
+  <node pkg="rqt_gui" type="rqt_gui" name="rqt_gui"/>
+      
+  
+
 </launch>

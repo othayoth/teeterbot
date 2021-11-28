@@ -20,11 +20,11 @@
   <!-- Simulation behavior settings -->
   <arg name="pub_ground_truth" default="false" />
   <arg name="auto_reset_orientation" default="true" />
-  <arg name="auto_reset_delay" default="2.0" />
+  <arg name="auto_reset_delay" default="4.0" />
 
   <!-- Control mode (set only one) -->
   <arg name="voltage_mode" default="false" />
-  <arg name="torque_mode" default="false" />
+  <arg name="torque_mode" default="true" />
   <arg name="speed_mode" default="false" />
 
   <group ns="$(arg robot_name)" >
