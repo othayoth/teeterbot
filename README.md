@@ -11,3 +11,11 @@ This repository is modified from the original teeterbot repository to implement 
  - Line by line explanation of the code
 
 
+# Example cases and visualization
+Please note that the robot is purposely made to lose balance by driving it at high velocities or suddenly changing velocities -- this causes large deviations from the linear approximation and leads to loss of balance
+
+
+https://user-images.githubusercontent.com/4443765/144693354-0a5a1ac5-e981-4324-9062-4aed298d4653.mp4
+
+
+
