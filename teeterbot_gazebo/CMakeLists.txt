@@ -13,7 +13,6 @@ link_directories(${GAZEBO_LIBRARY_DIRS})
 
 generate_dynamic_reconfigure_options(
   cfg/MotorControl.cfg
-  cfg/PID.cfg
 )
 
 add_service_files(

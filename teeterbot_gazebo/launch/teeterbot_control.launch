@@ -1,15 +1,23 @@
 <?xml version="1.0"?>
 <launch>
 
+  <!-- set to true for visualization -->
+  <arg name="visualization" default="false" />
+
   <!-- Spawn Teeterbot with specific settings -->
   <include file="$(find teeterbot_gazebo)/launch/teeterbot_empty_world.launch" />
 
-  <!-- Start node to control the robot-->
-  <node pkg="teeterbot_gazebo" type="robot_controller.py" name="robot_controller"/>
+  <!-- delay the launch of controller node to avoid errors-->
+  <arg name="node_start_delay" default="2.0" />  
 
-  <!--RQT to visualize-->
-  <node pkg="rqt_gui" type="rqt_gui" name="rqt_gui"/>
-      
+  <!-- Start node to control the robot-->
+  <node pkg="teeterbot_gazebo" type="robot_controller.py" name="robot_controller" launch-prefix="bash -c 'sleep $(arg node_start_delay); $0 $@' " />
+  
+  <!-- Start Complete Visualtization -->  
+  <group if="$(arg visualization)" >
+    <node pkg="rqt_gui" type="rqt_gui" name="Visualtization" args="--perspective-file $(find teeterbot_gazebo)/launch/teeterbot.perspective" />
+  </group>
+
   
 
 </launch>

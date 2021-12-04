@@ -21,14 +21,21 @@ class robot_controller():
         # reference trajectory
         self.ref_forward_speed = 0.0  # reference forward speed specified by the user        
         self.ref_turning_speed = 0.0  # reference turning speed specified by the user
+        # output trajectory achieved by the robot
+        self.out_forward_speed = 0.0  # output forward speed achieved by the robot
+        self.out_turning_speed = 0.0  # output turning speed achieved by the robot
+        self.output_velocity = Twist() # twist to store the messages
+        
         
         # right and left wheel speeds (to calculate turning speed)
         self.rw_speed = 0.0
         self.lw_speed = 0.0
         
-        # State feedback gain1s from LQR with integral action
-        self.K_r = [  -23.3150, -100.5295,  -33.9993,    7.3668,   15.8114,  -15.8114]
-        self.K_l = [  -23.3150, -100.5295,  -33.9993,   -7.3668,   15.8114,   15.8114]
+        # State feedback gain1s from LQR with integral action (generated from matlab code)
+        self.K_r = [ -23.3150, -100.5295,  -33.9993,    7.3668,   15.8114,  -15.8114]
+        self.K_l = [ -23.3150, -100.5295,  -33.9993,   -7.3668,   15.8114,   15.8114]
+        self.K_r =   [-4.3099,  -25.7769,   -5.9101,    2.3672,    2.2361,   -2.2361]
+        self.K_l =   [-4.3099,  -25.7769,   -5.9101,   -2.3672,    2.2361,    2.2361]
 
         # control torques for right and left wheels
         self.control_effort = [0.0,0.0]
@@ -48,6 +55,9 @@ class robot_controller():
         # create publishers
         self.pub_right_wheel = rospy.Publisher( "teeterbot/right_torque_cmd", Float64,queue_size=10)
         self.pub_left_wheel  = rospy.Publisher( "teeterbot/left_torque_cmd", Float64,queue_size=10)
+        self.pub_output_vel  = rospy.Publisher( "teeterbot/output_vel",Twist,queue_size=10)
+        self.pub_command_vel = rospy.Publisher( "teeterbot/commanded_vel",Twist,queue_size=10)
+        
                 
         # Main while loop.
         while not rospy.is_shutdown():                        
@@ -116,7 +126,11 @@ class robot_controller():
 
         #-----------------------------------------------------------------  
 
-        #print(self.state)
+        # publish output        
+        self.output_velocity.linear.x  = self.state[0]
+        self.output_velocity.angular.z = self.state[3]
+        self.pub_output_vel.publish(self.output_velocity)
+
         
         # control effort based on state feedback control with integral action
         self.control_effort[0] = -(self.K_r[0]*self.state[0] + 
